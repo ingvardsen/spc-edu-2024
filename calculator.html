@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simpel Lommeregner</title>
+    <!-- Indlæser Tailwind CSS fra CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 h-screen flex items-center justify-center">
+    <!-- Hovedcontainer for lommeregneren -->
+    <div class="bg-white p-6 rounded-lg shadow-md w-72">
+        <!-- Display til at vise input og resultater -->
+        <input type="text" id="display" class="w-full mb-4 p-2 text-right text-2xl border rounded" readonly>
+        
+        <!-- Container for knapper i et 4x5 grid -->
+        <div class="grid grid-cols-4 gap-2">
+            <!-- Første række: Clear og operatorer -->
+            <button onclick="clearDisplay()" class="bg-red-500 text-white p-4 rounded hover:bg-red-600">C</button>
+            <button onclick="appendToDisplay('/')" class="bg-gray-300 p-4 rounded hover:bg-gray-400">/</button>
+            <button onclick="appendToDisplay('*')" class="bg-gray-300 p-4 rounded hover:bg-gray-400">*</button>
+            <button onclick="appendToDisplay('-')" class="bg-gray-300 p-4 rounded hover:bg-gray-400">-</button>
+            
+            <!-- Anden række: 7, 8, 9 og plus -->
+            <button onclick="appendToDisplay('7')" class="bg-gray-200 p-4 rounded hover:bg-gray-300">7</button>
+            <button onclick="appendToDisplay('8')" class="bg-gray-200 p-4 rounded hover:bg-gray-300">8</button>
+            <button onclick="appendToDisplay('9')" class="bg-gray-200 p-4 rounded hover:bg-gray-300">9</button>
+            <button onclick="appendToDisplay('+')" class="bg-gray-300 p-4 rounded hover:bg-gray-400">+</button>
+            
+            <!-- Tredje række: 4, 5, 6 og start på ligmed -->
+            <button onclick="appendToDisplay('4')" class="bg-gray-200 p-4 rounded hover:bg-gray-300">4</button>
+            <button onclick="appendToDisplay('5')" class="bg-gray-200 p-4 rounded hover:bg-gray-300">5</button>
+            <button onclick="appendToDisplay('6')" class="bg-gray-200 p-4 rounded hover:bg-gray-300">6</button>
+            <!-- Ligmed-knappen strækker sig over to rækker -->
+            <button onclick="calculateResult()" class="bg-green-500 text-white p-4 rounded hover:bg-green-600 row-span-2">=</button>
+            
+            <!-- Fjerde række: 1, 2, 3 -->
+            <button onclick="appendToDisplay('1')" class="bg-gray-200 p-4 rounded hover:bg-gray-300">1</button>
+            <button onclick="appendToDisplay('2')" class="bg-gray-200 p-4 rounded hover:bg-gray-300">2</button>
+            <button onclick="appendToDisplay('3')" class="bg-gray-200 p-4 rounded hover:bg-gray-300">3</button>
+            
+            <!-- Femte række: 0 (strækker sig over to kolonner) og decimal -->
+            <button onclick="appendToDisplay('0')" class="bg-gray-200 p-4 rounded hover:bg-gray-300 col-span-2">0</button>
+            <button onclick="appendToDisplay('.')" class="bg-gray-200 p-4 rounded hover:bg-gray-300">.</button>
+        </div>
+    </div>
+
+    <script>
+        // Funktion til at tilføje værdier til displayet
+        function appendToDisplay(value) {
+            document.getElementById('display').value += value;
+        }
+
+        // Funktion til at rydde displayet
+        function clearDisplay() {
+            document.getElementById('display').value = '';
+        }
+
+        // Funktion til at beregne og vise resultatet
+        function calculateResult() {
+            try {
+                // Beregner resultatet ved hjælp af eval() funktionen
+                const result = eval(document.getElementById('display').value);
+                document.getElementById('display').value = result;
+            } catch (error) {
+                // Hvis der opstår en fejl, vises "Fejl" i displayet
+                document.getElementById('display').value = 'Fejl';
+            }
+        }
+    </script>
+</body>
+</html>
