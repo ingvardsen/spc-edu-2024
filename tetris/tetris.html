@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex justify-center items-center h-screen">
+    <div class="text-center">
+        <h1 class="text-4xl font-bold mb-4">Tetris</h1>
+        <canvas id="tetris" class="border-4 border-gray-800"></canvas>
+        <p class="mt-4">Score: <span id="score">0</span></p>
+        <button id="start" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Start Game
+        </button>
+    </div>
+    <script src="tetris.js"></script>
+</body>
+</html>
