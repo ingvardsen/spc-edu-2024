@@ -21,6 +21,9 @@ const alienHeight = 30;
 const alienPadding = 10;
 const alienOffsetTop = 50;
 const alienOffsetLeft = 50;
+let alienDx = 1; // Horizontal movement speed
+let alienDy = 10; // Vertical movement speed
+let alienDirection = 1; // 1 for right, -1 for left
 
 let rightPressed = false;
 let leftPressed = false;
@@ -36,10 +39,8 @@ function drawAliens() {
     for (let r = 0; r < alienRows; r++) {
         for (let c = 0; c < alienCols; c++) {
             if (!aliens[r][c].destroyed) {
-                const x = c * (alienWidth + alienPadding) + alienOffsetLeft;
-                const y = r * (alienHeight + alienPadding) + alienOffsetTop;
-                aliens[r][c].x = x;
-                aliens[r][c].y = y;
+                const x = aliens[r][c].x;
+                const y = aliens[r][c].y;
                 ctx.fillRect(x, y, alienWidth, alienHeight);
             }
         }
@@ -91,8 +92,33 @@ function initAliens() {
     for (let r = 0; r < alienRows; r++) {
         aliens[r] = [];
         for (let c = 0; c < alienCols; c++) {
-            aliens[r][c] = { x: 0, y: 0, destroyed: false };
+            const x = c * (alienWidth + alienPadding) + alienOffsetLeft;
+            const y = r * (alienHeight + alienPadding) + alienOffsetTop;
+            aliens[r][c] = { x, y, destroyed: false };
         }
+    }
+}
+
+function moveAliens() {
+    let atEdge = false;
+    aliens.forEach(row => {
+        row.forEach(alien => {
+            if (!alien.destroyed) {
+                alien.x += alienDx * alienDirection;
+                if (alien.x + alienWidth >= canvas.width || alien.x <= 0) {
+                    atEdge = true;
+                }
+            }
+        });
+    });
+
+    if (atEdge) {
+        alienDirection *= -1;
+        aliens.forEach(row => {
+            row.forEach(alien => {
+                alien.y += alienDy;
+            });
+        });
     }
 }
 
@@ -103,6 +129,7 @@ function draw() {
     drawBullets();
     movePlayer();
     moveBullets();
+    moveAliens();
     detectCollisions();
     requestAnimationFrame(draw);
 }
