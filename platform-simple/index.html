@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Platform Game</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const player = {
+            x: 50,
+            y: 200,
+            width: 30,
+            height: 30,
+            speed: 5,
+            jumpStrength: 10,
+            yVelocity: 0,
+            isJumping: false
+        };
+
+        const platform = {
+            x: 0,
+            y: 300,
+            width: 800,
+            height: 100
+        };
+
+        const goal = {
+            x: 750,
+            y: 270,
+            width: 30,
+            height: 30
+        };
+
+        function drawPlayer() {
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+        }
+
+        function drawPlatform() {
+            ctx.fillStyle = 'green';
+            ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+        }
+
+        function drawGoal() {
+            ctx.fillStyle = 'red';
+            ctx.fillRect(goal.x, goal.y, goal.width, goal.height);
+        }
+
+        function applyGravity() {
+            if (player.y + player.height < platform.y) {
+                player.yVelocity += 0.5;
+                player.y += player.yVelocity;
+            } else {
+                player.y = platform.y - player.height;
+                player.yVelocity = 0;
+                player.isJumping = false;
+            }
+        }
+
+        function checkCollision() {
+            if (
+                player.x < goal.x + goal.width &&
+                player.x + player.width > goal.x &&
+                player.y < goal.y + goal.height &&
+                player.y + player.height > goal.y
+            ) {
+                alert('You win!');
+                player.x = 50;
+                player.y = 200;
+            }
+        }
+
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            applyGravity();
+            checkCollision();
+
+            drawPlatform();
+            drawPlayer();
+            drawGoal();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        document.addEventListener('keydown', (event) => {
+            switch (event.key) {
+                case 'ArrowLeft':
+                    player.x -= player.speed;
+                    break;
+                case 'ArrowRight':
+                    player.x += player.speed;
+                    break;
+                case 'ArrowUp':
+                    if (!player.isJumping) {
+                        player.yVelocity = -player.jumpStrength;
+                        player.isJumping = true;
+                    }
+                    break;
+            }
+        });
+
+        gameLoop();
+    </script>
+</body>
+</html>
