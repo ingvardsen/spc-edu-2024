@@ -22,7 +22,7 @@
             width: 30,
             height: 30,
             speed: 5,
-            jumpStrength: 10,
+            jumpStrength: 12,
             yVelocity: 0,
             isJumping: false
         };
@@ -41,6 +41,8 @@
             height: 30
         };
 
+        const keys = {};
+
         function drawPlayer() {
             ctx.fillStyle = 'blue';
             ctx.fillRect(player.x, player.y, player.width, player.height);
@@ -57,10 +59,10 @@
         }
 
         function applyGravity() {
-            if (player.y + player.height < platform.y) {
-                player.yVelocity += 0.5;
-                player.y += player.yVelocity;
-            } else {
+            player.yVelocity += 0.8;
+            player.y += player.yVelocity;
+
+            if (player.y + player.height > platform.y) {
                 player.y = platform.y - player.height;
                 player.yVelocity = 0;
                 player.isJumping = false;
@@ -80,9 +82,23 @@
             }
         }
 
+        function handleInput() {
+            if (keys['ArrowLeft']) {
+                player.x -= player.speed;
+            }
+            if (keys['ArrowRight']) {
+                player.x += player.speed;
+            }
+            if (keys['ArrowUp'] && !player.isJumping) {
+                player.yVelocity = -player.jumpStrength;
+                player.isJumping = true;
+            }
+        }
+
         function gameLoop() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
+            handleInput();
             applyGravity();
             checkCollision();
 
@@ -94,20 +110,11 @@
         }
 
         document.addEventListener('keydown', (event) => {
-            switch (event.key) {
-                case 'ArrowLeft':
-                    player.x -= player.speed;
-                    break;
-                case 'ArrowRight':
-                    player.x += player.speed;
-                    break;
-                case 'ArrowUp':
-                    if (!player.isJumping) {
-                        player.yVelocity = -player.jumpStrength;
-                        player.isJumping = true;
-                    }
-                    break;
-            }
+            keys[event.code] = true;
+        });
+
+        document.addEventListener('keyup', (event) => {
+            keys[event.code] = false;
         });
 
         gameLoop();
