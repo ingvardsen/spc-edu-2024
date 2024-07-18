@@ -1,3 +1,5 @@
 # spc-edu-2024
 
-Simple JS games and animations
+Simple Javascript games and animations
+
+Serves as educational purpose.
