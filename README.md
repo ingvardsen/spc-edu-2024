@@ -1,5 +1,3 @@
 # spc-edu-2024
 
-Simple Javascript games and animations
-
-Serves as educational purpose.
+Small web games in HTML, CSS and JavaScript used in teaching.
