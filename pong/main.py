@@ -7,6 +7,7 @@ pygame.init()
 # Definer farver
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+GRAY = (50, 50, 50)
 
 # Skærmstørrelse
 SCREEN_WIDTH = 800
@@ -25,12 +26,19 @@ PADDLE_HEIGHT = 100
 BALL_SIZE = 15
 
 # Paddle positioner
-paddle1_pos = [10, SCREEN_HEIGHT//2 - PADDLE_HEIGHT//2]
-paddle2_pos = [SCREEN_WIDTH - 10 - PADDLE_WIDTH, SCREEN_HEIGHT//2 - PADDLE_HEIGHT//2]
+paddle1_pos = [10, SCREEN_HEIGHT // 2 - PADDLE_HEIGHT // 2]
+paddle2_pos = [SCREEN_WIDTH - 10 - PADDLE_WIDTH, SCREEN_HEIGHT // 2 - PADDLE_HEIGHT // 2]
 
 # Bold position og hastighed
-ball_pos = [SCREEN_WIDTH//2, SCREEN_HEIGHT//2]
+ball_pos = [SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2]
 ball_vel = [4, 4]
+
+# Score
+score1 = 0
+score2 = 0
+
+# Fonts
+font = pygame.font.SysFont('Arial', 30)
 
 # Kontroller
 joysticks = []
@@ -40,12 +48,23 @@ for i in range(pygame.joystick.get_count()):
     joysticks.append(joystick)
 
 def draw():
-    screen.fill(BLACK)
-    # Tegn paddles
-    pygame.draw.rect(screen, WHITE, (paddle1_pos[0], paddle1_pos[1], PADDLE_WIDTH, PADDLE_HEIGHT))
-    pygame.draw.rect(screen, WHITE, (paddle2_pos[0], paddle2_pos[1], PADDLE_WIDTH, PADDLE_HEIGHT))
-    # Tegn bold
-    pygame.draw.rect(screen, WHITE, (ball_pos[0], ball_pos[1], BALL_SIZE, BALL_SIZE))
+    # Tegn baggrund
+    screen.fill(GRAY)
+    
+    # Tegn midterlinje
+    pygame.draw.line(screen, WHITE, (SCREEN_WIDTH // 2, 0), (SCREEN_WIDTH // 2, SCREEN_HEIGHT), 5)
+    
+    # Tegn paddles med afrundede hjørner
+    pygame.draw.rect(screen, WHITE, (paddle1_pos[0], paddle1_pos[1], PADDLE_WIDTH, PADDLE_HEIGHT), border_radius=10)
+    pygame.draw.rect(screen, WHITE, (paddle2_pos[0], paddle2_pos[1], PADDLE_WIDTH, PADDLE_HEIGHT), border_radius=10)
+    
+    # Tegn bold som en cirkel
+    pygame.draw.ellipse(screen, WHITE, (ball_pos[0], ball_pos[1], BALL_SIZE, BALL_SIZE))
+    
+    # Tegn score
+    score_text = font.render(f'{score1}     {score2}', True, WHITE)
+    screen.blit(score_text, (SCREEN_WIDTH // 2 - score_text.get_width() // 2, 20))
+    
     pygame.display.flip()
 
 while True:
@@ -87,15 +106,22 @@ while True:
 
     # Kollision med paddles
     if (ball_pos[0] <= paddle1_pos[0] + PADDLE_WIDTH and
-        paddle1_pos[1] < ball_pos[1] < paddle1_pos[1] + PADDLE_HEIGHT):
+        paddle1_pos[1] < ball_pos[1] + BALL_SIZE and
+        ball_pos[1] < paddle1_pos[1] + PADDLE_HEIGHT):
         ball_vel[0] = -ball_vel[0]
-    if (ball_pos[0] >= paddle2_pos[0] - BALL_SIZE and
-        paddle2_pos[1] < ball_pos[1] < paddle2_pos[1] + PADDLE_HEIGHT):
+    if (ball_pos[0] + BALL_SIZE >= paddle2_pos[0] and
+        paddle2_pos[1] < ball_pos[1] + BALL_SIZE and
+        ball_pos[1] < paddle2_pos[1] + PADDLE_HEIGHT):
         ball_vel[0] = -ball_vel[0]
 
-    # Reset bold hvis den går ud af skærmen
-    if ball_pos[0] <= 0 or ball_pos[0] >= SCREEN_WIDTH - BALL_SIZE:
-        ball_pos = [SCREEN_WIDTH//2, SCREEN_HEIGHT//2]
+    # Score opdatering
+    if ball_pos[0] <= 0:
+        score2 += 1
+        ball_pos = [SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2]
+        ball_vel[0] = -ball_vel[0]
+    if ball_pos[0] >= SCREEN_WIDTH - BALL_SIZE:
+        score1 += 1
+        ball_pos = [SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2]
         ball_vel[0] = -ball_vel[0]
 
     draw()
