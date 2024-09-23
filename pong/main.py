@@ -9,12 +9,12 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (50, 50, 50)
 
-# Skærmstørrelse
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+# Opret fuldskærmsvindue
+screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 pygame.display.set_caption('Pong')
+
+# Opdater skærmstørrelse
+SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_size()
 
 clock = pygame.time.Clock()
 
