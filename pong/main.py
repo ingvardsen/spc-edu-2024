@@ -76,7 +76,7 @@ winner = None
 
 # Power-up data
 power_ups = []
-POWER_UP_SIZE = 20
+POWER_UP_SIZE = 40
 POWER_UP_DURATION = 5  # sekunder
 
 # Spillerens power-up status
