@@ -233,14 +233,27 @@ while True:
                 ball['vel'][1] = -ball['vel'][1]
 
             # Kollision med paddles
-            if (ball['pos'][0] <= paddle1_pos[0] + PADDLE_WIDTH and
-                paddle1_pos[1] < ball['pos'][1] + BALL_SIZE and
-                ball['pos'][1] < paddle1_pos[1] + PADDLE_HEIGHT):
-                ball['vel'][0] = -ball['vel'][0]
-            if (ball['pos'][0] + BALL_SIZE >= paddle2_pos[0] and
-                paddle2_pos[1] < ball['pos'][1] + BALL_SIZE and
-                ball['pos'][1] < paddle2_pos[1] + PADDLE_HEIGHT):
-                ball['vel'][0] = -ball['vel'][0]
+            for paddle_pos, paddle_num in [(paddle1_pos, 1), (paddle2_pos, 2)]:
+                if ((paddle_num == 1 and ball['pos'][0] <= paddle_pos[0] + PADDLE_WIDTH) or
+                    (paddle_num == 2 and ball['pos'][0] + BALL_SIZE >= paddle_pos[0])) and \
+                   paddle_pos[1] < ball['pos'][1] + BALL_SIZE and \
+                   ball['pos'][1] < paddle_pos[1] + PADDLE_HEIGHT:
+                    
+                    # Calculate relative impact point
+                    relative_impact = (ball['pos'][1] - paddle_pos[1]) / PADDLE_HEIGHT
+                    
+                    # Calculate new angle based on impact point
+                    angle = relative_impact - 0.5  # -0.5 to 0.5
+                    angle *= 2  # Increase angle range
+                    
+                    # Calculate new velocity
+                    speed = (ball['vel'][0]**2 + ball['vel'][1]**2)**0.5
+                    if paddle_num == 1:
+                        ball['vel'][0] = abs(speed * 0.8)  # 80% of speed for x component
+                        ball['vel'][1] = speed * angle
+                    else:
+                        ball['vel'][0] = -abs(speed * 0.8)  # 80% of speed for x component
+                        ball['vel'][1] = speed * angle
 
             # Score opdatering
             if ball['pos'][0] <= 0:
