@@ -84,6 +84,9 @@ paddle_power_up = {1: None, 2: None}
 paddle_original_height = PADDLE_HEIGHT
 paddle_original_speed = PADDLE_SPEED
 
+# Tilføj denne konstant i toppen af filen, sammen med de andre konstanter
+BALL_ACCELERATION = 1.05  # 5% acceleration ved hvert hit
+
 def create_confetti():
     for _ in range(200):
         x = random.randint(0, SCREEN_WIDTH)
@@ -246,8 +249,9 @@ while True:
                     angle = relative_impact - 0.5  # -0.5 to 0.5
                     angle *= 2  # Increase angle range
                     
-                    # Calculate new velocity
+                    # Calculate new velocity with acceleration
                     speed = (ball['vel'][0]**2 + ball['vel'][1]**2)**0.5
+                    speed *= BALL_ACCELERATION  # Accelerer bolden
                     if paddle_num == 1:
                         ball['vel'][0] = abs(speed * 0.8)  # 80% of speed for x component
                         ball['vel'][1] = speed * angle
