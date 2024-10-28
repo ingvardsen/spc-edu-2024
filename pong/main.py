@@ -38,7 +38,7 @@ clock = pygame.time.Clock()
 # Paddles
 PADDLE_WIDTH = 10
 PADDLE_HEIGHT = SCREEN_HEIGHT // 6  # Dynamisk baseret på skærmhøjde
-PADDLE_SPEED = 5
+PADDLE_SPEED = 10  # Increased from 5
 
 # Bold
 BALL_SIZE = 15
@@ -84,8 +84,10 @@ paddle_power_up = {1: None, 2: None}
 paddle_original_height = PADDLE_HEIGHT
 paddle_original_speed = PADDLE_SPEED
 
-# Tilføj denne konstant i toppen af filen, sammen med de andre konstanter
-BALL_ACCELERATION = 1.05  # 5% acceleration ved hvert hit
+# Tilføj disse variabler i starten af filen sammen med de andre konstanter
+START_BALL_SPEED = 4
+ACCELERATION_RATE = 3  # Hastigheden øges med 300% per minut
+game_start_time = time.time()
 
 def create_confetti():
     for _ in range(200):
@@ -247,17 +249,21 @@ while True:
                     
                     # Calculate new angle based on impact point
                     angle = relative_impact - 0.5  # -0.5 to 0.5
-                    angle *= 2  # Increase angle range
+                    angle *= 1.5  # Reduce angle range slightly
                     
-                    # Calculate new velocity with acceleration
-                    speed = (ball['vel'][0]**2 + ball['vel'][1]**2)**0.5
-                    speed *= BALL_ACCELERATION  # Accelerer bolden
+                    # Calculate new velocities with constant speed
+                    base_speed = START_BALL_SPEED
+                    
+                    # Accelerate on hit
+                    base_speed += ACCELERATION_RATE  # Increase speed on each hit
+                    
+                    # Calculate new velocities with constant speed
                     if paddle_num == 1:
-                        ball['vel'][0] = abs(speed * 0.8)  # 80% of speed for x component
-                        ball['vel'][1] = speed * angle
+                        ball['vel'][0] = base_speed
+                        ball['vel'][1] = base_speed * angle * 2
                     else:
-                        ball['vel'][0] = -abs(speed * 0.8)  # 80% of speed for x component
-                        ball['vel'][1] = speed * angle
+                        ball['vel'][0] = -base_speed
+                        ball['vel'][1] = base_speed * angle * 2
 
             # Score opdatering
             if ball['pos'][0] <= 0:
